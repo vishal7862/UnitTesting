@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Principal;
 using System.Web.Helpers;
@@ -48,30 +49,48 @@ namespace MVC
        
         }
 
+        //static List<Employees> fill()
+        //{
+        //    List<Employees> emps=new List<Employees>();
+        //    emps.Add(new Employees{Id=220,Name = "Abc",DepartmentId = 93});
+        //    emps.Add(new Employees { Id = 220, Name = "Abc", DepartmentId = 93 });
+        //    emps.Add(new Employees { Id = 221, Name = "Pqr", DepartmentId = 93 }); 
+        //    emps.Add(new Employees { Id = 222, Name = "Xyz", DepartmentId = 93 });
+        //    return emps;
+        //} 
 
+       
         [TestMethod]
         public void Test_ToRetrievesAllEmpFromRepository()
         {
+            
             // Arrange
-            InmemoryEmployeesRepository  emprepository = new InmemoryEmployeesRepository();     
-            InmemoryDepartmentRepository deptRepository=new InmemoryDepartmentRepository();
-            Employees employee1 = GetEmp(217,"vishal", 93);
+            Employees employee1 = GetEmp(217, "vishal", 93);
             Employees employee2 = GetEmp(218, "vishal", 93);
             Employees employee3 = GetEmp(219, "vishal", 93);
+
+            InmemoryEmployeesRepository  emprepository = new InmemoryEmployeesRepository();     
+            InmemoryDepartmentRepository deptRepository=new InmemoryDepartmentRepository();
             emprepository.CreateEmployee(employee1);
             emprepository.CreateEmployee(employee2);
             emprepository.CreateEmployee(employee3);
-            var controller = GetHomeController(emprepository, deptRepository);
-            // Act
-            var result = controller.GetAllEmployee();
-            string res = JsonConvert.SerializeObject(result);
-            JavaScriptSerializer se=new JavaScriptSerializer();
-            IEnumerable<Employees> emp = JsonConvert.DeserializeObject<IEnumerable<Employees>>(res);
 
+            var controller = GetHomeController(emprepository, deptRepository);
+           
+            // Act
+            var actual= controller.GetAllEmployee();
+            var strActual = actual.Data;
             // Assert 
-           // IEnumerable<Employees> emps =JsonConvert.DeserializeObject<IEnumerable<Employees>>(test);
-            Assert.IsTrue(emp.Contains(employee1));
-         
+            IEnumerable<Employees> employees = emprepository.GetAllEmployees();
+            JavaScriptSerializer se=new JavaScriptSerializer();
+            string jsonStr = se.Serialize(employees);
+            
+            Assert.IsNotNull(actual);
+            Assert.AreEqual(jsonStr, strActual);
+           // Assert.AreSame(jsonStr,strActual);  Assertion fails as it is pointing to different objects
+
+
+
         }
 
 
@@ -82,7 +101,8 @@ namespace MVC
         {
             // Arrange
             Employees employee1 = GetEmp(217,"Vishal",93);
-
+             Employees employee2 = GetEmp(218, "vishal", 93);
+            Employees employee3 = GetEmp(219, "vishal", 93);
             InmemoryEmployeesRepository emprepository = new InmemoryEmployeesRepository();
             InmemoryDepartmentRepository deptRepository = new InmemoryDepartmentRepository();
     
