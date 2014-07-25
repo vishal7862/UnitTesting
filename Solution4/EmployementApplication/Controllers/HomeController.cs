@@ -35,11 +35,15 @@ namespace EmployementApplication.Controllers
             [HttpPost]
             public JsonResult  CreateEmployee(Employees employee)
             {
+                string res = "";
 
-                 _employeesRepository.CreateEmployee(employee);
-                 string res = JsonConvert.SerializeObject(employee);
-                 return Json(res);
-
+                if (ModelState.IsValid)
+                {
+                    _employeesRepository.CreateEmployee(employee);
+                     res = JsonConvert.SerializeObject(employee);
+                    
+                }
+                return Json(res);
             }
 
             [HttpGet]
@@ -106,10 +110,15 @@ namespace EmployementApplication.Controllers
 
             public JsonResult CreateDepartment(Departments department)
             {
+                string res = "";
 
-               _departmentsRepository.CreateDepartment(department);
-               string res = JsonConvert.SerializeObject(department);
-               return Json(res);
+                if (ModelState.IsValid) 
+                { 
+                    _departmentsRepository.CreateDepartment(department);
+                    res = JsonConvert.SerializeObject(department);
+                }
+               
+                return Json(res);
                 
             }
 
