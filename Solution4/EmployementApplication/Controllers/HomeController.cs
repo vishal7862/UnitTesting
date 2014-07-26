@@ -43,6 +43,10 @@ namespace EmployementApplication.Controllers
                      res = JsonConvert.SerializeObject(employee);
                     
                 }
+                else
+                {
+                    ModelState.AddModelError("","");
+                }
                 return Json(res);
             }
 
